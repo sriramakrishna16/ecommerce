@@ -1,0 +1,11 @@
+
+.env
+.env.local
+.env.production
+
+application-secret.properties
+
+*.log
+
+.DS_Store
+Thumbs.db
