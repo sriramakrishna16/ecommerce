@@ -160,11 +160,11 @@ HOW TO RUN:
         - will start on http://localhost:8080
 
 Challenges Solved:
-    Handling deletion of last item in an order
-    Avoiding incorrect UI state after backend updates
-    Managing React state vs backend data consistency
-    Preventing misuse of exceptions for business logic
-    Ensuring correct identifiers (orderItemId vs productId)
+    - Handling deletion of last item in an order
+    - Avoiding incorrect UI state after backend updates
+    - Managing React state vs backend data consistency
+    - Preventing misuse of exceptions for business logic
+    - Ensuring correct identifiers (orderItemId vs productId)
     
 Example Challenges:
 
