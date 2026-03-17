@@ -10,11 +10,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class UserPrinciple implements UserDetails {
+public class UsersPrincipal implements UserDetails {
 
     private Users user;
 
-    public UserPrinciple(Users user){
+    public UsersPrincipal(Users user){
         this.user = user;
     }
 
