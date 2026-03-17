@@ -2,6 +2,7 @@ import {useState} from "react";
 import {useEffect} from "react";
 import api from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import "./Profile.css";
 
 
 function Profile(){
@@ -28,8 +29,6 @@ function Profile(){
                 alert("login to continue");
             }
     }
-    
-
 
     return (
         
@@ -41,31 +40,27 @@ function Profile(){
                     
                     <div className = "row">   
                         <span className="label">Username</span>
-                        <span className="colon">:</span>
                         <span>{profiledetails.username}</span>
                     </div>
                     <div className = "row">
                         <span className="label">Name</span>
-                        <span className="colon">:</span>
                         <span>{profiledetails.name}</span>
                     </div>
                     <div className = "row">
                         <span className="label">Email</span>
-                        <span className="colon">:</span>
                         <span>{profiledetails.email}</span>
                     </div>
                     <div className = "row">
                         <span className="label">Phone no</span>
-                        <span className="colon">:</span>
                         <span>{profiledetails.phone}</span>
                     </div>
                     <div className = "row">
                         <span className="label">Address</span>
-                        <span className="colon">:</span>
                         <span>{profiledetails.address}</span>
                     </div>
                     <div className="profile-button-placement">
                     <button className="edit-button"onClick={()=>navigate("/updateProfile")}>edit personal details</button>
+ 
                     </div>
                     
                     

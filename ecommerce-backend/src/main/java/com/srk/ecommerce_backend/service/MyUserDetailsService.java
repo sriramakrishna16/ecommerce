@@ -19,6 +19,6 @@ public class MyUserDetailsService implements UserDetailsService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = userRepo.findByUsername(username);
 
-        return new UserPrinciple(user); //it takes a object because UserDetails needed many items
+        return new UserPrinciple(user); //it takes a object because UserDetails have both name and password
     }
 }

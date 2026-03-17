@@ -33,8 +33,8 @@ public class SecurityConfiguration {
     private UserDetailsService userDetailsService;
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+            throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
@@ -47,6 +47,8 @@ public class SecurityConfiguration {
                                 .permitAll()
                                 .requestMatchers("/Images/**")
                                 .permitAll()
+                                .requestMatchers("/orders/**")
+                                .authenticated()
                                 .anyRequest()
                                 .authenticated())
                 .cors(cors -> cors.configurationSource(request -> {

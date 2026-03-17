@@ -8,20 +8,6 @@ function Cart() {
     const [cartItems, setCartItems] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const [showCheckout, setShowCheckout] = useState(false);
-    const [addresses, setAddresses] = useState([]);
-    const [selectedAddressId, setSelectedAddressId] = useState("");
-
-    const [addressForm, setAddressForm] = useState({
-        fullName: "",
-        phoneNumber: "",
-        houseNo: "",
-        street: "",
-        city: "",
-        state: "",
-        pincode: ""
-    });
-
     const fetchCartItems = useCallback(async () => {
         try {
             setLoading(true);
@@ -43,14 +29,6 @@ function Cart() {
         }
     }, [navigate]);
 
-    const fetchAddresses = async () => {
-        try {
-            const response = await api.get("/addresses");
-            setAddresses(response.data);
-        } catch (err) {
-            toast.error("Failed to load addresses");
-        }
-    };
 
     useEffect(() => {
         fetchCartItems();
@@ -99,65 +77,19 @@ function Cart() {
         }
     };
 
-    const handleAddressChange = (e) => {
-        setAddressForm({
-            ...addressForm,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const saveAddress = async () => {
-        try {
-            const response = await api.post("/addresses", addressForm);
-            toast.success("Address added successfully");
-            setAddresses(prev => [...prev, response.data]);
-            setSelectedAddressId(response.data.id);
-
-            setAddressForm({
-                fullName: "",
-                phoneNumber: "",
-                houseNo: "",
-                street: "",
-                city: "",
-                state: "",
-                pincode: ""
-            });
-        } catch (err) {
-            toast.error("Failed to save address");
-        }
-    };
-
-    const openCheckout = async () => {
-        await fetchAddresses();
-        setShowCheckout(true);
-    };
-
-    const placeOrder = async () => {
-        if (!selectedAddressId) {
-            toast.error("Please select an address");
-            return;
+    const placeOrder = async()=>{
+        try{
+            const response = await api.post("/cart/place");
+            console.log("order placed", response.data);
+            toast.success("Order Placed Successfully");
+            fetchCartItems();
+        }catch(err){
+            toast.error("failed to place order");
         }
 
-        try {
-            await api.post("/orders/place", {
-                addressId: selectedAddressId
-            });
 
-            toast.success("Order placed successfully");
-            setCartItems({
-                items: [],
-                totalItems: 0,
-                price: 0,
-                discount: 0,
-                totalPrice: 0
-            });
-
-            setShowCheckout(false);
-            navigate("/orders");
-        } catch (err) {
-            toast.error("Failed to place order");
-        }
-    };
+    }
+   
 
     if (loading) {
         return <h1>your cart is loading</h1>;
@@ -165,7 +97,7 @@ function Cart() {
 
     if (!cartItems || cartItems.items.length === 0) {
         return (
-            <div className="empty-cart-desc">
+            <div className="orders-empty">
                 <h3>Your cart is empty</h3>
                 <p>Add items to it now</p>
                 <button
@@ -206,101 +138,12 @@ function Cart() {
                     </div>
 
                     <div className="place-order-footer">
-                        <button className="place-order-btn" onClick={openCheckout}>
+                        <button className="place-order-btn" onClick ={placeOrder}>
                             Place Order
                         </button>
                     </div>
 
-                    {showCheckout && (
-                        <div className="checkout-box">
-                            <h2>Select Address</h2>
-
-                            {addresses.length > 0 ? (
-                                <div className="address-list">
-                                    {addresses.map(address => (
-                                        <label key={address.id} className="address-card">
-                                            <input
-                                                type="radio"
-                                                name="selectedAddress"
-                                                value={address.id}
-                                                checked={selectedAddressId === String(address.id)}
-                                                onChange={(e) => setSelectedAddressId(e.target.value)}
-                                            />
-                                            <div>
-                                                <p><b>{address.fullName}</b></p>
-                                                <p>{address.phoneNumber}</p>
-                                                <p>
-                                                    {address.houseNo}, {address.street}, {address.city},
-                                                    {" "}{address.state} - {address.pincode}
-                                                </p>
-                                            </div>
-                                        </label>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p>No saved addresses found</p>
-                            )}
-
-                            <h3>Add New Address</h3>
-                            <div className="address-form">
-                                <input
-                                    type="text"
-                                    name="fullName"
-                                    placeholder="Full Name"
-                                    value={addressForm.fullName}
-                                    onChange={handleAddressChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="phoneNumber"
-                                    placeholder="Phone Number"
-                                    value={addressForm.phoneNumber}
-                                    onChange={handleAddressChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="houseNo"
-                                    placeholder="House No"
-                                    value={addressForm.houseNo}
-                                    onChange={handleAddressChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="street"
-                                    placeholder="Street"
-                                    value={addressForm.street}
-                                    onChange={handleAddressChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="city"
-                                    placeholder="City"
-                                    value={addressForm.city}
-                                    onChange={handleAddressChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="state"
-                                    placeholder="State"
-                                    value={addressForm.state}
-                                    onChange={handleAddressChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="pincode"
-                                    placeholder="Pincode"
-                                    value={addressForm.pincode}
-                                    onChange={handleAddressChange}
-                                />
-                                <button onClick={saveAddress}>Save Address</button>
-                            </div>
-
-                            <div className="checkout-actions">
-                                <button onClick={placeOrder}>Confirm Order</button>
-                                <button onClick={() => setShowCheckout(false)}>Cancel</button>
-                            </div>
-                        </div>
-                    )}
+                    
                 </div>
 
                 <div className="cart-details">

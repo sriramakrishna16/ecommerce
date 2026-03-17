@@ -1,0 +1,146 @@
+.pd-start {
+  max-width: 750px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pd-img {
+  width: 320px;
+  height: 320px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.pd-img:hover {
+  transform: scale(1.05);
+}
+.pd-title {
+  font-size: 28px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.pd-info {
+  margin: 6px 0;
+  font-size: 16px;
+  color: #444;
+  text-align: center;
+}
+
+.pd-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1a7f37;
+  margin: 12px 0;
+}
+
+.pd-stock {
+  font-weight: bold;
+}
+
+.in-stock {
+  color: green;
+}
+
+.out-stock {
+  color: red;
+}
+
+.pd-desc {
+  margin-top: 15px;
+  max-width: 600px;
+  line-height: 1.6;
+  color: #555;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+.pd-btn-group {
+  margin-top: 20px;
+}
+
+.pd-cart-btn,
+.pd-buy-btn {
+  padding: 10px 20px;
+  margin: 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.pd-cart-btn {
+  background: #2c7be5;
+  color: white;
+}
+
+.pd-buy-btn {
+  background: #28a745;
+  color: white;
+}
+
+.pd-cart-btn:hover,
+.pd-buy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.pd-cart-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+.pd-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pd-modal {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+}
+
+.pd-confirm-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pd-confirm-btn:hover {
+  background: #1e7e34;
+}
+
+.pd-cancel-btn {
+  background: gray;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
