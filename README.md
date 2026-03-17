@@ -78,7 +78,6 @@ ecommerce/
         |── model/             
         |── repository/         
         |── service/           
-
     ecommerce_frontend/    
         ├── src/
         |   ├── Pages/
@@ -89,47 +88,29 @@ ecommerce/
 
 Backend architecture:
     Controllers:
-
         CartController.java
-
         ProductController.java
-
         UserController.java
 
-    Services
-
+    Services:
         CartService.java
-
         JwtService.java
-
         MyUserDetailsService.java
-
         OrderService.java
-
         ProductService.java
-
         UserService.java
 
-    Models
-
+    Models:
         CartItem.java
-
         Order.java
-
         OrderItem.java
-
         Product.java
-
-        UserPrinciple.java
-
+        UsersPrincipal.java
         Users.java
-
-    Security / configuration
-
+        
+    Security / configuration:
         JwtFilter.java
-
         SecurityConfiguration.java
-
 
 Key Functional Flow
  Order Placement:
@@ -168,22 +149,21 @@ This project demonstrates a real-world scalable e-commerce system with proper ba
 
 HOW TO RUN:
     Frontend:
-        cd ecommerce-frontend
-        npm install
-        npm start
-        will run on http://localhost:3000
+        1.cd ecommerce-frontend
+        2.npm install
+        3.npm start
+        - will run on http://localhost:3000
     BAckend:
-        navigate : cd ecommerce-backend
-        Configure database in application.properties
-        run : mvn spring-boot:run
-        will start on http://localhost:8080
+        1.navigate : cd ecommerce-backend
+        2.Configure database in application.properties
+        3.run : mvn spring-boot:run
+        - will start on http://localhost:8080
 
 Challenges Solved:
     Handling deletion of last item in an order
     Avoiding incorrect UI state after backend updates
     Managing React state vs backend data consistency
     Preventing misuse of exceptions for business logic
-    Fixing JPA persistence context issues
     Ensuring correct identifiers (orderItemId vs productId)
     
 Example Challenges:
