@@ -79,12 +79,56 @@ function Cart() {
 
     const placeOrder = async()=>{
         try{
-            const response = await api.post("/cart/place");
-            console.log("order placed", response.data);
-            toast.success("Order Placed Successfully");
-            fetchCartItems();
+            const response = await api.post("/payment/create-order");
+            const data = response.data;
+            console.log(data);
+            const options = {
+
+                key: data.key,
+
+                amount: data.amount,
+
+                currency: data.currency,
+
+                order_id: data.razorPayOrderId,
+
+                name: "SRK Store",
+
+                description: "Order Payment",
+
+                handler: async function(response){
+                    try{
+                        await api.post("/payment/verify", {
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpaySignature: response.razorpay_signature,
+                            dbOrderId: data.dbOrderId
+                        });
+
+                        toast.success("Payment Successful");
+
+                        fetchCartItems();
+
+                        navigate("/orders");
+
+                    }catch(err){
+                        toast.error("Payment verification failed");
+                        }
+                },
+
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+
+        const razorpay = new window.Razorpay(options);
+
+        razorpay.open();
+
+
         }catch(err){
-            toast.error("failed to place order");
+            console.log(err.message);
+            toast.error("failed to start payment");
         }
 
 
@@ -111,74 +155,79 @@ function Cart() {
     }
 
     return (
-        <div className="cart-background">
-            <div className="cart-container">
-                <div className="cart-left-section">
-                    <div className="cart-items-wrapper">
-                        {cartItems.items.map(item => (
-                            <div key={item.id} className="cart-items">
-                                <div className="product-img">
-                                    <img
-                                        src={`http://localhost:8080/Images/${item.product.imageUrl}`}
-                                        alt={item.product.name}
-                                        className="product-image-small"
-                                    />
-                                </div>
-                                <div className="cart-product-info">
-                                    <h1>{item.product.name}</h1>
-                                    <h1>{item.product.category}</h1>
-                                    <h1>{item.product.price}</h1>
-                                    <h1>quantity: {item.quantity}</h1>
-                                    <button onClick={() => removeFromCart(item.id)}>
-                                        remove
-                                    </button>
-                                </div>
+    <div className="shopping-cart-page">
+        <div className="shopping-cart-layout">
+            <div className="shopping-cart-left">
+                <div className="shopping-cart-list">
+                    {cartItems.items.map(item => (
+                        <div key={item.id} className="shopping-cart-card">
+                            <div className="shopping-cart-image-box">
+                                <img
+                                    src={`http://localhost:8080/Images/${item.product.imageUrl}`}
+                                    alt={item.product.name}
+                                    className="shopping-cart-image"
+                                    onClick={()=>navigate(`/products/${item.product.id}`)}
+                                />
                             </div>
-                        ))}
-                    </div>
 
-                    <div className="place-order-footer">
-                        <button className="place-order-btn" onClick ={placeOrder}>
-                            Place Order
-                        </button>
-                    </div>
+                            <div className="shopping-cart-info">
+                                <h2>{item.product.name}</h2>
+                                <p>{item.product.category}</p>
+                                <p>₹{item.product.price}</p>
+                                <p>Quantity: {item.quantity}</p>
 
-                    
+                                <button className="shopping-cart-remove-btn" onClick={() => removeFromCart(item.id)} >
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
-                <div className="cart-details">
-                    <h5 className="cart-summary-heading">PRICE DETAILS</h5>
-                    <div className="cart-details-middle">
-                        <div className="cart-text">
-                            <p>Items</p>
-                            <b>{cartItems.totalItems}</b>
-                        </div>
-                        <div className="cart-text">
-                            <p>Price</p>
-                            <b>₹{cartItems.price}</b>
-                        </div>
-                        <div className="cart-text">
-                            <p>Discount</p>
-                            <b className="discount">-₹{cartItems.discount}</b>
-                        </div>
-                        <div className="cart-text">
-                            <p>Coupons</p>
-                            <b>no coupons available</b>
-                        </div>
-                    </div>
-                    <div className="cart-total-amount">
-                        <b>Total Amount</b>
-                        <b>₹{cartItems.totalPrice}</b>
-                    </div>
-                    <div className="cart-text">
-                        <b className="discount">
-                            You will save ₹{cartItems.discount} on this order
-                        </b>
-                    </div>
+                <div className="shopping-cart-footer">
+                    <button className="shopping-cart-order-btn" onClick={placeOrder}>
+                        Place Order
+                    </button>
                 </div>
             </div>
+
+            <div className="shopping-cart-summary">
+                <h3 className="shopping-cart-summary-title">Price Details</h3>
+
+                <div className="shopping-cart-summary-body">
+                    <div className="shopping-cart-row">
+                        <span>Items</span>
+                        <strong>{cartItems.totalItems}</strong>
+                    </div>
+
+                    <div className="shopping-cart-row">
+                        <span>Price</span>
+                        <strong>₹{cartItems.price}</strong>
+                    </div>
+
+                    <div className="shopping-cart-row">
+                        <span>Discount</span>
+                        <strong className="shopping-cart-green">-₹{cartItems.discount}</strong>
+                    </div>
+
+                    <div className="shopping-cart-row">
+                        <span>Coupons</span>
+                        <strong>No coupons available</strong>
+                    </div>
+                </div>
+
+                <div className="shopping-cart-total">
+                    <span>Total Amount</span>
+                    <strong>₹{cartItems.totalPrice}</strong>
+                </div>
+
+                <p className="shopping-cart-save-text">
+                    You will save ₹{cartItems.discount} on this order
+                </p>
+            </div>
         </div>
-    );
+    </div>
+);
 }
 
 export default Cart;

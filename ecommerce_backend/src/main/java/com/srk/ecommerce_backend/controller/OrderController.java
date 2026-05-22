@@ -18,13 +18,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/cart/place")
-    public ResponseEntity<Order> placeOrder(Authentication auth){
-        String username = auth.getName();
-        Order order = orderService.placeOrder(username);
-        return ResponseEntity.ok(order);
-    }
-
     @GetMapping("/orders")
     public List<OrderResponse> getOrders(Authentication auth){
         String username = auth.getName();
@@ -52,10 +45,4 @@ public class OrderController {
         return ResponseEntity.ok("order cancelled successfully");
     }
 
-    @PostMapping("/orders/buy/{productId}")
-    public ResponseEntity<?> buyProduct(@PathVariable int productId, Authentication auth){
-        String username = auth.getName();
-        orderService.buyProduct(productId,username);
-        return ResponseEntity.ok("order placed");
-    }
 }

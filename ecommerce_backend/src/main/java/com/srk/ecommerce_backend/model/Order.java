@@ -29,5 +29,12 @@ public class Order {
     @JsonManagedReference
     private List<OrderItem> items;
 
+    private String status;
+
+    private String razorpayOrderID;
+
+    private String paymentId;
+
+
 
 }

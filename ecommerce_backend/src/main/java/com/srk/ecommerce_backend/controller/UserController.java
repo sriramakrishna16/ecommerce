@@ -1,6 +1,7 @@
 package com.srk.ecommerce_backend.controller;
 
 
+import com.srk.ecommerce_backend.dto.LoginResponse;
 import com.srk.ecommerce_backend.dto.UserProfileUpdateDto;
 import com.srk.ecommerce_backend.model.Users;
 import com.srk.ecommerce_backend.service.JwtService;
@@ -37,11 +38,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Users user) throws AuthenticationException {
+    public LoginResponse login(@RequestBody Users user) throws AuthenticationException {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        if (authentication.isAuthenticated())
-            return jwtService.generateToken(user.getUsername());
-        else
+        if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(user.getUsername());
+            Users currentUser = service.findUsername(user.getUsername());
+            return new LoginResponse(token, currentUser.getRole().name());
+        } else
             throw new BadCredentialsException("Invalid Username or Password");
     }
 

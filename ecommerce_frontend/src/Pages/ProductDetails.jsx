@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect , useCallback} from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { addToCart } from "../ReusableService";
@@ -11,15 +11,15 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [showPopup, setShowPopup] = useState(false); 
   
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
       const res = await api.get(`/products/${id}`);
       setProduct(res.data);
-    };
+    },[id]);
 
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, [fetchProduct]);
 
   const handleToAdd = async (productId) => {
     try {
@@ -36,14 +36,57 @@ function ProductDetails() {
 
   const proceedToBuy = async () => {
     try {
-      await api.post(`/orders/buy/${product.id}`);
-      toast.success("Order placed successfully!");
-      setShowPopup(false);
-      fetchProduct();
-    } catch {
-      toast.error("Order failed");
+      const response = await api.post(`/payment/orders/buy/${product.id}`);
+      const data = response.data;
+      if(data.status === "OUT_OF_STOCK"){
+        toast.error("product is out of stock");
+        setShowPopup(false);
+        fetchProduct();
+        return;
+      }
+      const options = {
+        key: data.key,
+        amount: data.amount,
+        currency: data.currency,
+        order_id: data.razorPayOrderId,
+
+        name: "SRK Store",
+        description: product.name,
+
+        handler: async function (response) {
+
+          try {
+            await api.post("/payment/verify", {
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature,
+              dbOrderId: data.dbOrderId
+            });
+
+            toast.success("Payment Successful");
+            setShowPopup(false);
+
+            fetchProduct(); 
+
+          } catch (err) {
+            toast.error("Payment verification failed");
+          }
+        },
+
+        theme: {
+          color: "#3399cc"
+        }
+      };
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+
+    } catch (err){
+      console.log(err);
+      toast.error("failed to start payment");
     }
+    
   };
+
 
   if (!product) {
     return <p className="pd-loading">Loading product...</p>;
@@ -52,11 +95,7 @@ function ProductDetails() {
   return (
     <div className="pd-start">
 
-      <img
-        className="pd-img"
-        src={`http://localhost:8080/Images/${product.imageUrl}`}
-        alt={product.name}
-      />
+      <img className="pd-img" src={`http://localhost:8080/Images/${product.imageUrl}`} alt={product.name}/>
 
       <h2 className="pd-title">{product.name}</h2>
 
@@ -73,11 +112,7 @@ function ProductDetails() {
 
       <div className="pd-btn-group">
 
-        <button
-          className="pd-cart-btn"
-          disabled={product.stock === 0}
-          onClick={() => handleToAdd(product.id)}
-        >
+        <button className="pd-cart-btn" disabled={product.stock === 0} onClick={() => handleToAdd(product.id)} >
           Add to Cart
         </button>
 
@@ -90,7 +125,6 @@ function ProductDetails() {
 
       </div>
 
-      {/* POPUP MODAL */}
       {showPopup && (
         <div className="pd-modal-overlay">
           <div className="pd-modal">
@@ -99,17 +133,11 @@ function ProductDetails() {
 
             <p>Do you want to buy this product?</p>
 
-            <button
-              className="pd-confirm-btn"
-              onClick={proceedToBuy}
-            >
+            <button className="pd-confirm-btn" onClick={proceedToBuy}>
               Proceed to Buy
             </button>
 
-            <button
-              className="pd-cancel-btn"
-              onClick={() => setShowPopup(false)}
-            >
+            <button className="pd-cancel-btn" onClick={() => setShowPopup(false)}>
               Cancel
             </button>
 

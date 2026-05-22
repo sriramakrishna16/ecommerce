@@ -1,5 +1,6 @@
 package com.srk.ecommerce_backend.model;
 
+import com.srk.ecommerce_backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class Users {
     private String password;
 
     private String address;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 //    public Users(String username, String password) {
 //        this.username = username;

@@ -1,6 +1,6 @@
 package com.srk.ecommerce_backend.service;
 
-import com.srk.ecommerce_backend.model.UsersPrincipal;
+import com.srk.ecommerce_backend.model.UserPrinciple;
 import com.srk.ecommerce_backend.model.Users;
 import com.srk.ecommerce_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ public class MyUserDetailsService implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = userRepo.findByUsername(username);
-        return new UsersPrincipal(user); 
+
+        return new UserPrinciple(user); //it takes a object because UserDetails have both name and password
     }
 }

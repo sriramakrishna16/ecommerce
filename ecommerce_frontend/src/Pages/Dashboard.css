@@ -1,0 +1,58 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef2f7;
+}
+
+
+.dashboard-container{
+    min-height: 100vh;
+    padding: 50px;
+    background: linear-gradient(to right, #f8fbff, #eef3ff);
+}
+
+.dashboard-title{
+    text-align: center;
+    font-size: 42px;
+    color: #1e293b;
+    margin-bottom: 60px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.dashboard-cards{
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: wrap;
+}
+
+.dashboard-card{
+    width: 260px;
+    height: 170px;
+
+    border: none;
+    border-radius: 20px;
+
+    background: white;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+
+    font-size: 28px;
+    font-weight: bold;
+    color: #334155;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover{
+    transform: translateY(-8px) scale(1.03);
+
+    box-shadow: 0 14px 35px rgba(0,0,0,0.18);
+
+    background: #2563eb;
+    color: white;
+}

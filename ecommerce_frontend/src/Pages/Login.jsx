@@ -14,7 +14,8 @@ function Login(){
                 password
             });
 
-            localStorage.setItem("token",response.data);
+            localStorage.setItem("token",response.data.token);
+            localStorage.setItem("role", response.data.role);
             
             navigate("/home");
 
@@ -24,15 +25,28 @@ function Login(){
         }
     };
 
-    return (
-        <div className = "login-page">
-        <h1 className="login-title">login</h1>
-        <input className="login-buttons" type="text" placeholder="username" value={username} onChange={(e)=>setUsername(e.target.value)}/>
-        <input className="login-buttons" type="password" placeholder="password" value={password} onChange={(e)=>setPassword(e.target.value)}/>
-        <button className="login-submit-button" onClick={loginHandler}>Login</button>
-        <p>not registered yet..? <span onClick={()=>navigate("/register")} className = "register-button">Register</span></p>
-        </div>
-    )
+   return (
+  <div className="login-container">
+
+    <div className="login-card">
+
+      <h2 className="login-title">Login</h2>
+
+      <input className="login-input" type="text" placeholder="Username" value={username}
+       onChange={(e) => setUsername(e.target.value)}/>
+
+      <input className="login-input" type="password" placeholder="Password" value={password}
+        onChange={(e) => setPassword(e.target.value)}/>
+
+      <button className="login-submit-button" onClick={loginHandler} >Login</button>
+      
+      <p className="login-footer">
+        Not registered yet?{" "}
+        <span className="register-button" onClick={() => navigate("/register")}>Register</span>
+      </p>
+    </div>
+  </div>
+);
 };
 
 export default Login;

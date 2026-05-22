@@ -50,10 +50,13 @@ public class OrderService {
 
         for(CartItem item : cartItems){
             Product product = productRepository.findById(item.getProduct().getId());
+            if(product.getStock() < item.getQuantity()){
+                throw new RuntimeException("Out Of Stock" + product.getName());
+            }
             OrderItem orderItem = new OrderItem();
 
-            product.setStock(product.getStock()-item.getQuantity());
-            productRepository.save(product);
+//            product.setStock(product.getStock()-item.getQuantity());
+//            productRepository.save(product);
             orderItem.setProductId(product.getId());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setPrice(product.getPrice());
@@ -65,18 +68,20 @@ public class OrderService {
         }
 
         order.setItems(orderItems);
-        order.setAmount(total);
-        Order saveOrder = orderRepo.save(order);
-        cartRepository.deleteAll(cartItems);
+        order.setAmount(total - total/10);
+        order.setStatus("PENDING");
+        order.setRazorpayOrderID(null);
+        order.setPaymentId(null);
+        //        cartRepository.deleteAll(cartItems);
 
-        return saveOrder;
+        return orderRepo.save(order);
 
     }
 
     public List<OrderResponse> getOrders(String username) {
         Users user = userRepository.findByUsername(username);
         int userId = user.getId();
-        List<Order> orders = orderRepo.findByUserId(userId);
+        List<Order> orders = orderRepo.findByUserIdAndStatus(userId,"SUCCESS");
         List<OrderResponse> result = new ArrayList<>();
         for(Order order: orders ){
             OrderResponse response = new OrderResponse();
@@ -197,6 +202,9 @@ public class OrderService {
         order.setUserId(userId);
         order.setOrderDate(LocalDateTime.now());
         order.setAmount(product.getPrice());
+        order.setStatus("PENDING");
+        order.setRazorpayOrderID(null);
+        order.setPaymentId(null);
         orderRepo.save(order);
 
         OrderItem item = new OrderItem();
@@ -207,7 +215,7 @@ public class OrderService {
 
         orderItemRepo.save(item);
 
-        product.setStock(product.getStock()-1);
-        productRepository.save(product);
+//        product.setStock(product.getStock()-1);
+//        productRepository.save(product);
     }
 }
