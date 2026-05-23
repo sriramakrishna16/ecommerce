@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import api from "../api/axiosConfig";
 import "./ProductsAdmin.css";
+import { toast } from "react-toastify";
+
 
 function ProductsAdmin() {
     const [products, setProducts] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [editId, setEditId] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
 
     const [form, setForm] = useState({
         name: "",
@@ -36,41 +43,80 @@ function ProductsAdmin() {
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleToDelete = async() =>{
+        try{
+           await api.delete(`/admin/product/remove/${deleteId}`);
+           toast.success("Product deleted successfully");
+           setShowDeleteModal(false);
+           setDeleteId(null);
+           fetchProducts();
 
-        const formData = new FormData();
-
-        formData.append(
-            "product",
-            new Blob([JSON.stringify(form)], {
-                type: "application/json"
-            })
-        );
-
-        formData.append("image", image);
-
-        try {
-            await api.post("/admin/products/add", formData);
-
-            setShowForm(false);
-
-            setForm({
-                name: "",
-                brand: "",
-                category: "",
-                price: "",
-                stock: ""
-            });
-
-            setImage(null);
-
-            fetchProducts();
-
-        } catch (error) {
-            console.error("Add product error:", error);
+        }catch(err){
+            console.log(err.message);
+            toast.error("Failed to delete");
         }
+    }
+
+    const handleToEdit = async(product) => {
+        setForm({
+            name: product.name,
+            brand: product.brand,
+            category: product.category,
+            price: product.price,
+            stock: product.stock
+        });
+        setPreviewImage(product.imageUrl);
+        setEditId(product.id);
+        setIsEdit(true);
+        setShowForm(true);
     };
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append(
+        "product",
+        new Blob([JSON.stringify(form)], {
+            type: "application/json"
+        })
+    );
+
+    if (image) {
+        formData.append("image", image);
+    }
+
+    try {
+        if (isEdit) {
+            await api.put(`/admin/product/update/${editId}`, formData);
+            toast.success("Product updated successfully");
+        } else {
+            await api.post("/admin/products/add", formData);
+            toast.success("Product added successfully");
+        }
+
+        setShowForm(false);
+        setIsEdit(false);
+        setEditId(null);
+
+        setForm({
+            name: "",
+            brand: "",
+            category: "",
+            price: "",
+            stock: ""
+        });
+
+        setImage(null);
+
+        fetchProducts();
+
+    } catch (error) {
+        console.error(error);
+        toast.error("Operation failed");
+    }
+};
 
     return (
         <div className="admin-products-container">
@@ -85,8 +131,7 @@ function ProductsAdmin() {
                 <div className="modal">
                     <form className="product-form" onSubmit={handleSubmit}>
 
-                        <h2>Add Product</h2>
-
+                        <h2>{isEdit ? "Edit Product" : "Add Product"}</h2>
                         <input
                             name="name"
                             placeholder="Name"
@@ -128,16 +173,34 @@ function ProductsAdmin() {
                             onChange={handleChange}
                             required
                         />
+                        {isEdit && previewImage && (
+                            <div style={{ marginBottom: "10px" }}>
+                                <img
+                                    src={`http://localhost:8080/Images/${previewImage}`}
+                                    alt="preview"
+                                    style={{
+                                        width: "80px",
+                                        height: "80px",
+                                        objectFit: "cover",
+                                        borderRadius: "6px"
+                                    }}
+                                />
+                            </div>
+                        )}
 
                         <input
                             type="file"
                             onChange={(e) => setImage(e.target.files[0])}
-                            required
                         />
 
                         <div className="form-actions">
                             <button type="submit">Save</button>
-                            <button type="button" onClick={() => setShowForm(false)}>
+                            <button type="button" onClick={() => {setShowForm(false);
+                                setPreviewImage(null);
+                                setImage(null);
+                                setIsEdit(false);
+                                setEditId(null);
+                            }}>
                                 Cancel
                             </button>
                         </div>
@@ -179,17 +242,46 @@ function ProductsAdmin() {
                             <td>{product.category}</td>
                             <td>₹ {product.price}</td>
                             <td>{product.stock}</td>
+                            
 
                             <td>
-                                <button className="edit-btn">Edit</button>
-                                <button className="delete-btn">Delete</button>
+                                <button className="edit-btn"
+                                onClick = {() => {handleToEdit(product)}}>Edit</button>
+                                <button className="delete-btn"
+                                onClick = {()=> {setDeleteId(product.id);
+                                    setShowDeleteModal(true);
+                                }}>Delete</button>
                             </td>
+                            
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-        </div>
+            {showDeleteModal && (
+                    <div className="modal">
+                        <div className="delete-modal">
+                            <h2>Warning</h2>
+                            <p>This action will permanently delete the product.</p>
+                            <p> This cannot be undone.</p>
+                            <div className="form-actions">
+                                <button
+                                    className="cancel-btn"
+                                    onClick={() => {
+                                        setShowDeleteModal(false);
+                                        setDeleteId(null);
+                                    }}>Cancel</button>
+                                <button
+                                    className="delete-confirm-btn"
+                                    onClick={handleToDelete}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+        </div>   
     );
 }
 

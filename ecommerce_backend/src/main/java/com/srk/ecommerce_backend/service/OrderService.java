@@ -70,6 +70,7 @@ public class OrderService {
         order.setItems(orderItems);
         order.setAmount(total - total/10);
         order.setStatus("PENDING");
+        order.setOrderStatus("PLACED");
         order.setRazorpayOrderID(null);
         order.setPaymentId(null);
         //        cartRepository.deleteAll(cartItems);
@@ -203,6 +204,7 @@ public class OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setAmount(product.getPrice());
         order.setStatus("PENDING");
+        order.setOrderStatus("PLACED");
         order.setRazorpayOrderID(null);
         order.setPaymentId(null);
         orderRepo.save(order);
@@ -217,5 +219,46 @@ public class OrderService {
 
 //        product.setStock(product.getStock()-1);
 //        productRepository.save(product);
+    }
+
+    public List<Order> getAllOrders() {
+        return orderRepo.findAll();
+    }
+
+    @Transactional
+    public void updateOrderStatus(int orderId, String orderStatus) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setOrderStatus(orderStatus);
+
+        orderRepo.save(order);
+    }
+
+    @Transactional
+    public void adminDeleteOrder(int orderId) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        List<OrderItem> orderItems =
+                orderItemRepo.findByOrder_OrderId(orderId);
+
+        for (OrderItem item : orderItems) {
+
+            Product product =
+                    productRepository.findById(item.getProductId());
+
+            product.setStock(
+                    product.getStock() + item.getQuantity()
+            );
+
+            productRepository.save(product);
+        }
+
+        orderItemRepo.deleteAll(orderItems);
+
+        orderRepo.delete(order);
     }
 }

@@ -13,6 +13,8 @@ import "react-toastify/dist/ReactToastify.css";
 import OrderDetails from './Pages/OrderDetails';
 import Dashboard from "./Pages/Dashboard";
 import ProductsAdmin from "./Pages/AdminProductManagement";
+import UsersAdmin from "./Pages/AdminUserManagement";
+import OrdersAdmin from "./Pages/AdminOrderManagement";
 
 
 import ProtectedRoute from './components/protectedRoute';
@@ -104,6 +106,8 @@ function App() {
         <Route path ="/admin/dashboard" element={<Dashboard/>} />
         <Route path ="/admin/products" element = {<ProductsAdmin/>} />
         <Route path="/orders/:orderId/:id" element = {<ProductDetails />} />
+        <Route path="/admin/users" element = {<UsersAdmin/>} />
+        <Route path="/admin/ordermanagement" element={<OrdersAdmin/>}/>
 
 
         {/* Protected Home */}

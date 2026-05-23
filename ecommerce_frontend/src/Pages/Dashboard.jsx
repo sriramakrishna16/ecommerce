@@ -19,11 +19,13 @@ function Dashboard(){
                     Products
                 </button>
 
-                <button className="dashboard-card">
+                <button className="dashboard-card"
+                onClick = {() => navigate("/admin/users")}>
                     Users
                 </button>
 
-                <button className="dashboard-card">
+                <button className="dashboard-card"
+                onClick = {() => navigate("/admin/ordermanagement")}>
                     Orders
                 </button>
 

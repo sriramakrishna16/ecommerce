@@ -121,6 +121,7 @@ public class PaymentService {
         order.setUserId(user.getId());
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING");
+        order.setOrderStatus("PLACED");
         order.setAmount(product.getPrice());
 
         OrderItem item = new OrderItem();

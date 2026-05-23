@@ -1,0 +1,100 @@
+.orders-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.orders-container h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #222;
+    text-align: center;
+}
+
+.orders-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+
+    transition: transform 0.2s ease;
+}
+
+.orders-card:hover {
+    transform: translateY(-3px);
+}
+
+.orders-info h3 {
+    margin-bottom: 14px;
+    color: #111;
+    font-size: 22px;
+}
+
+.orders-info p {
+    margin: 8px 0;
+    color: #444;
+    font-size: 16px;
+}
+
+.orders-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.orders-actions select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    cursor: pointer;
+    outline: none;
+    background: white;
+}
+
+.orders-actions select:focus {
+    border-color: #007bff;
+}
+
+.delete-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #e53935;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #c62828;
+}
+
+@media (max-width: 768px) {
+
+    .orders-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .orders-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .orders-actions select,
+    .delete-btn {
+        width: 100%;
+    }
+}

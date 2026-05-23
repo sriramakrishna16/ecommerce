@@ -42,9 +42,9 @@ public class ProductService {
     }
 
     public Product addProduct(MultipartFile image, ProductRequest request) throws IOException {
-        Files.createDirectories(Paths.get("uploads"));
+        Files.createDirectories(Paths.get("Uploads/Images"));
         String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        Path path = Paths.get("uploads", filename);
+        Path path = Paths.get("Uploads/Images", filename);
         Files.write(path, image.getBytes());
         Product product = new Product();
         product.setName(request.getName());
@@ -55,5 +55,37 @@ public class ProductService {
         product.setImageUrl(filename);
 
         return repo.save(product);
+    }
+
+    public void deleteProduct(int productId) {
+        Product product = repo.findById(productId);
+        if(product != null){
+            try{
+                Path imagePath = Paths.get("Uploads/Images", product.getImageUrl());
+                Files.deleteIfExists(imagePath);
+            }catch(IOException e){
+                System.err.println("Failed to delete image file: " + e.getMessage());
+            }
+            repo.delete(product);
+        }
+    }
+
+    public void updateProduct(int productId , MultipartFile image , ProductRequest request) throws IOException{
+        Product product = repo.findById(productId);
+        product.setName(request.getName());
+        product.setBrand(request.getBrand());
+        product.setCategory(request.getCategory());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
+
+        if(image != null && !image.isEmpty()){
+            Files.createDirectories(Paths.get("Uploads/Images"));
+            String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path path = Paths.get("Uploads/Images", filename);
+            Files.write(path, image.getBytes());
+            product.setImageUrl(filename);
+        }
+
+        repo.save(product);
     }
 }

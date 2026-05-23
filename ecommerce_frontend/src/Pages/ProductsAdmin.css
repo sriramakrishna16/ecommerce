@@ -169,3 +169,40 @@
 .form-actions button[type="button"]:hover {
     background: #5a6268;
 }
+
+.delete-modal {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.delete-modal h2 {
+    color: #dc3545;
+    margin-bottom: 10px;
+}
+
+.delete-modal p {
+    margin: 10px 0;
+    color: #333;
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-confirm-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
