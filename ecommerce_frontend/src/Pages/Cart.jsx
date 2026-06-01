@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 function Cart() {
     const navigate = useNavigate();
-
     const [cartItems, setCartItems] = useState(null);
     const [loading, setLoading] = useState(true);
     const [address, setAddress] = useState("");
