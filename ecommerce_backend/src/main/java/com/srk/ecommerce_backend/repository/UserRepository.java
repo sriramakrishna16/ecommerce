@@ -10,5 +10,5 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 
 public interface UserRepository extends JpaRepository<Users, Integer> {
     Users findByUsername(String username);
-    List<Users> findALlByOrderByNameAsc();
+    List<Users> findAllByOrderByNameAsc();
 }

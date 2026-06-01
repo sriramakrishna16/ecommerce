@@ -1,6 +1,7 @@
 package com.srk.ecommerce_backend.service;
 
 
+import com.srk.ecommerce_backend.dto.AddressResponse;
 import com.srk.ecommerce_backend.dto.UserDtoForAdmin;
 import com.srk.ecommerce_backend.dto.UserProfileDto;
 import com.srk.ecommerce_backend.dto.UserProfileUpdateDto;
@@ -69,7 +70,7 @@ public class UserService {
     }
 
     public List<UserProfileDto> getUsers(){
-        List<Users> users = userRepo.findALlByOrderByNameAsc();
+        List<Users> users = userRepo.findAllByOrderByNameAsc();
         return users.stream()
                 .map(user -> new UserProfileDto(
                         user.getUsername(),
@@ -107,5 +108,18 @@ public class UserService {
         cartRepo.deleteByUserId(user.getId());
 
         userRepo.delete(user);
+    }
+
+    public String getAddress(String username) {
+        Users user = userRepo.findByUsername(username);
+        return user.getAddress();
+    }
+
+    public String saveAddress(String username, AddressResponse response) {
+        Users user = userRepo.findByUsername(username);
+        String address = response.getAddress();
+        user.setAddress(response.getAddress());
+        userRepo.save(user);
+        return address;
     }
 }
