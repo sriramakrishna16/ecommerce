@@ -32,8 +32,15 @@ function HomeProducts(){
 
 
     const handleToAdd = async function(productId){
+        const token = localStorage.getItem("token")
+        if(token){
         await addToCart(productId);
         toast.success("product added to cart");
+        }
+        else{
+            toast.warn("please login to continue");
+            navigate("/login");
+        }
     }
 
     if (loading){

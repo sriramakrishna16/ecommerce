@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 function Cart() {
     const navigate = useNavigate();
+
     const [cartItems, setCartItems] = useState(null);
     const [loading, setLoading] = useState(true);
     const [address, setAddress] = useState("");
@@ -164,7 +165,8 @@ function Cart() {
             <div className="orders-empty">
                 <h3>Your cart is empty</h3>
                 <p>Add items to it now</p>
-                <button onClick={() => navigate("/home")}>
+                <button onClick={() => navigate("/home")}
+                    className="cart-shop-button">
                     Shop now
                 </button>
             </div>

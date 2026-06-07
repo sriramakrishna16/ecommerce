@@ -1,5 +1,5 @@
 import { useState, useEffect , useCallback} from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { addToCart } from "../ReusableService";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import "./ProductDetails.css";
 
 function ProductDetails() {
 
+  const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [showPopup, setShowPopup] = useState(false); 
@@ -21,17 +22,29 @@ function ProductDetails() {
     fetchProduct();
   }, [fetchProduct]);
 
+  const token = localStorage.getItem("token");
+
   const handleToAdd = async (productId) => {
     try {
+      if(token){
       await addToCart(productId);
       toast.success("Product added to cart");
+      }else{
+        toast.warn("please login to continue");
+        navigate("/login");
+      }
     } catch {
       toast.error("Failed to add product");
     }
   };
 
   const handleBuyNow = () => {
+    if(token){
     setShowPopup(true);
+    }else{
+      toast.warn("please login to continue");
+      navigate("/login");
+    }
   };
 
   const proceedToBuy = async () => {
